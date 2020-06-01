@@ -19,7 +19,11 @@ func (r ReplicaSetResource) BuildNode() Node {
 	node := transformCommon(r)         // Start off with the common properties
 	apiGroupVersion(r.TypeMeta, &node) // add kind, apigroup and version
 	// Extract the properties specific to this type
-	node.Properties["current"] = int64(r.Status.Replicas)
+	node.Properties["current"] = int64(0)
+	if r.Status.ReadyReplicas != nil {
+		node.Properties["current"] = int64(*r.Status.ReadyReplicas)
+	}
+
 	node.Properties["desired"] = int64(0)
 	if r.Spec.Replicas != nil {
 		node.Properties["desired"] = int64(*r.Spec.Replicas)

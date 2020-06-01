@@ -22,3 +22,13 @@ func TestTransformReplicaSet(t *testing.T) {
 	AssertEqual("current", node.Properties["current"], int64(1), t)
 	AssertEqual("desired", node.Properties["desired"], int64(1), t)
 }
+
+func TestTransformReplicaSetUnavailable(t *testing.T) {
+	var r v1.ReplicaSet
+	UnmarshalFile("replicaset.json", &r, t)
+	node := ReplicaSetResource{&r}.BuildNode()
+
+	// Test only the fields that exist in replica set - the common test will test the other bits
+	AssertEqual("current", node.Properties["current"], int64(0), t)
+	AssertEqual("desired", node.Properties["desired"], int64(1), t)
+}
